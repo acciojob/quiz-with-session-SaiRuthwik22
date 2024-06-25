@@ -2,7 +2,7 @@
 
 // Do not change code below this line
 // This code will just display the questions to the screen
-const questions = [
+let questions = [
   {
     question: "What is the capital of France?",
     choices: ["Paris", "London", "Berlin", "Madrid"],
@@ -29,28 +29,55 @@ const questions = [
     answer: "Ottawa",
   },
 ];
+const userAnswers = sessionStorage.getItem("userAnswers")?JSON.parse(sessionStorage.getItem("userAnswers")):new Array(5).fill(null);
 
 // Display the quiz questions and choices
 function renderQuestions() {
+  let questiondisp = document.getElementById("questions");
   for (let i = 0; i < questions.length; i++) {
-    const question = questions[i];
-    const questionElement = document.createElement("div");
-    const questionText = document.createTextNode(question.question);
+    let question = questions[i];
+    let questionElement = document.createElement("div");
+    let questionText = document.createTextNode(question.question);
     questionElement.appendChild(questionText);
+    
     for (let j = 0; j < question.choices.length; j++) {
-      const choice = question.choices[j];
-      const choiceElement = document.createElement("input");
+      let choice = question.choices[j];
+      let choiceElement = document.createElement("input");
       choiceElement.setAttribute("type", "radio");
       choiceElement.setAttribute("name", `question-${i}`);
       choiceElement.setAttribute("value", choice);
-      if (userAnswers[i] === choice) {
-        choiceElement.setAttribute("checked", true);
+
+		if (userAnswers && userAnswers[i]) {
+			if (userAnswers[i] === choice) {
+		        choiceElement.setAttribute("checked", true)
       }
-      const choiceText = document.createTextNode(choice);
+		}
+		      choiceElement.onclick = function() {
+				  console.log(choice)
+				  userAnswers[i]=choice
+				  console.log(userAnswers)
+				  sessionStorage.setItem("userAnswers",JSON.stringify(userAnswers))
+      };
+      
+      let choiceText = document.createTextNode(choice);
       questionElement.appendChild(choiceElement);
       questionElement.appendChild(choiceText);
     }
-    questionsElement.appendChild(questionElement);
+    
+    questiondisp.appendChild(questionElement);
   }
 }
+
 renderQuestions();
+function clearing() {
+	let count = 0
+	let score = document.getElementById("score")
+	for (let i = 0; i < questions.length; i++) {
+		if(userAnswers[i]===questions[i].answer){
+			count+=1
+		}
+		score.textContent = `Your score is ${count} out of 5.`
+	}
+	localStorage.setItem("score",score)
+	
+}
