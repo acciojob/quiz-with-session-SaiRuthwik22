@@ -78,6 +78,6 @@ function clearing() {
 		}
 		score.textContent = `Your score is ${count} out of 5.`
 	}
-	localStorage.setItem("score",score)
+	localStorage.setItem("score",JSON.count)
 	
 }
